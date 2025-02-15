@@ -2,3 +2,5 @@ flask
 bs4
 lxml
 paser
+gunicorn
+uvicorn
