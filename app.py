@@ -2,15 +2,42 @@ from flask import Flask, render_template, request, redirect, url_for, send_file
 import os
 from bs4 import BeautifulSoup
 import lxml
+import os
 
-app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "static/uploads"
+app = Flask(__name__, static_folder="static", template_folder="templates")
+UPLOAD_FOLDER = 'static/uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Ensure upload folder exists
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+@app.route('/uploadsp', methods=['GET', 'POST'])
+def uploadsp():
+    if request.method == 'POST':
+        shader_code = request.form.get('shader_code')
+        modified_code = shader_code.replace('time', 't')
+        with open(os.path.join(UPLOAD_FOLDER, 'shader_code.txt'), 'w') as f:
+            f.write(modified_code)
+        return redirect(url_for('previewsp'))
+    return render_template('shaderpark.html')
+
+@app.route('/previewsp')
+def previewsp():
+    shader_code = ""
+    shader_file = os.path.join(UPLOAD_FOLDER, 'shader_code.txt')
+    if os.path.exists(shader_file):
+        with open(shader_file, 'r') as f:
+            shader_code = f.read()
+    return render_template('shaderpreview.html', shader_code=shader_code)
+
 
 
 @app.route("/")
+def home():
+    return render_template("home.html")
+
+@app.route("/shaderpark")
+def shaderpark():
+    return render_template("shaderpark.html")
+
+@app.route("/svg")
 def index():
     return """
     <!DOCTYPE html>

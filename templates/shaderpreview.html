@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shader Preview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='button.css') }}">
+    <style>
+        body {
+            font-family: helvetica, arial, sans-serif;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+        }
+        canvas {
+            width: 100vw;
+            height: 200vh;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background-color: transparent;
+        }
+        /* Hide button in downloaded HTML */
+        @media print {
+            #download-btn {
+                display: none;
+            }
+        }
+        button {
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="my-canvas"></canvas>
+
+    <!-- Download Button -->
+    <button display: "block" width: "100%" class="button-86" id="download-btn" onclick="downloadPage()">Download Page</button>
+
+    <script type="module">
+        import { sculptToMinimalRenderer } from 'https://unpkg.com/shader-park-core/dist/shader-park-core.esm.js';
+
+        function spCode() {
+            setMaxIterations(1);
+            backgroundColor(0, 5, 20);
+            let scroll = input();
+            let t = time * 0.01 + scroll;
+            {{ shader_code | safe }}
+        }
+
+        let canvas = document.querySelector('.my-canvas');
+        let state = { scroll: 0.0 };
+
+        sculptToMinimalRenderer(canvas, spCode, () => {
+            state.scroll = state.scroll * 0.92 + window.pageYOffset / window.innerHeight * 0.08;
+            return state;
+        });
+    </script>
+
+    <!-- Download Script -->
+    <script>
+        function downloadPage() {
+            let content = document.documentElement.outerHTML;
+            let blob = new Blob([content], { type: "text/html" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "shader_preview.html";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+
+</body>
+</html>

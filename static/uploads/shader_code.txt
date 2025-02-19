@@ -1,0 +1,19 @@
+let scale = input(1.8, 0, 30);
+let s = getSpace();
+let n = noise(s*scale+vec3(0, 0, t/PI)+noise(s*scale+vec3(0, 0, t/PI)));
+let ray = getRayDirection();
+let hue = abs(sin(t*.2));
+let saturation = 1;
+let value = 1;
+let col = hsv2rgb(vec3(hue,saturation,value));
+setStepSize(.1);
+
+
+color((col+.4*n)+.8);
+metal(.4);
+shine(0.8);
+setSpace(s*vec3( 0.88, 4, 2));
+rotateX(ray.x * 7 + (t*PI)/2);
+torus(.7+.1, .18);
+blend(.5);
+sphere(.45+.03*n)
