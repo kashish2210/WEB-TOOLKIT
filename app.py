@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 UPLOAD_FOLDER = 'static/uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 @app.route('/uploadsp', methods=['GET', 'POST'])
 def uploadsp():
@@ -36,7 +36,7 @@ def home():
 @app.route("/shaderpark")
 def shaderpark():
     return render_template("shaderpark.html")
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
 @app.route("/svg")
 def index():
     return """
