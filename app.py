@@ -6,6 +6,7 @@ import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 @app.route('/uploadsp', methods=['GET', 'POST'])
